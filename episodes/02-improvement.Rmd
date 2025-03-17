@@ -6,7 +6,7 @@ exercises: 2
 
 [**Download Chapter notebook (ipynb)**](https://drive.usercontent.google.com/u/1/uc?id=1Gib2BeOLzIb6dgVMQQuPqw8nLA8Ti0SX&export=download)
 
-[**Download Chapter PDF**](https://drive.usercontent.google.com/u/1/uc?id=1SkSVASAbhU1hgy5SdjxUdV0c_aatPjoy&export=download)
+[**Download Chapter PDF**](https://drive.usercontent.google.com/u/1/uc?id=16tDnxEFO77t0UusDStdhXdnm9duuMCOP&export=download)
 
 [<span style="color: rgb(255, 0, 0);">**Mandatory Lesson Feedback Survey**</span>](https://docs.google.com/forms/d/e/1FAIpQLSdr0capF7jloJhPH3Pki1B3LZoKOG16poOpuVJ7SL2LkwLHQA/viewform?pli=1)
 
@@ -115,7 +115,7 @@ if (output_format == "html_notebook") {
 }
 ```
 
-:::::::::::::::::::::::::::::::::::::: questions
+:::::::::::::::::::::::::::::::::::::: discussion
 
 - How to deal with complex classification problems?
 - Why is it important to use different classification algorithms?
@@ -123,7 +123,7 @@ if (output_format == "html_notebook") {
 - How can we avoid over-fitting of data?
 - How do we evaluate the performance of classifiers?
 
-::::::::::::::::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::::::::::::
 
 ::::::::::::::::::::::::::::::::::::: objectives
 
@@ -195,12 +195,12 @@ Here is the function code to create these data, followed by a function call to p
 ```{python}
 def make_torus_3D(n_samples=100, shuffle=True, noise=None, random_state=None,
                  factor=.8):
-    """Make a large torus containing a smaller torus in 3d.
+    """Make a large torus containing a smaller torus in 3-D.
 
-    A toy dataset to visualize clustering and classification
+    A toy dataset to visualise clustering and classification
     algorithms.
 
-    Read more in the :ref:`User Guide <sample_generators>`.
+    Read more in the User Guide.
 
     Parameters
     ----------
@@ -235,34 +235,45 @@ def make_torus_3D(n_samples=100, shuffle=True, noise=None, random_state=None,
 
     if factor >= 1 or factor < 0:
         raise ValueError("'factor' has to be between 0 and 1.")
-
+    
+    # Determine the number of samples for each torus.
     n_samples_out = n_samples // 2
     n_samples_in = n_samples - n_samples_out
-
+    
+    # Define the radii and thickness of the outer and inner tori.
     co, ao, ci, ai = 3, 1, 3.6, 0.2
+    
+    # Initialize the random number generator.
     generator = check_random_state(random_state)
-    # to not have the first point = last point, we set endpoint=False
+    
+    # to not have the first point = last point, we set endpoint=False.
     linspace_out = linspace(0, 2 * pi, n_samples_out, endpoint=False)
     linspace_in  = linspace(0, 2 * pi, n_samples_in,  endpoint=False)
+    
+    # Compute 3D coordinates for the outer torus.
     outer_circ_x = (co+ao*cos(linspace_out)) * cos(linspace_out*61.1)
     outer_circ_y = (co+ao*cos(linspace_out)) * sin(linspace_out*61.1)
     outer_circ_z =    ao*sin(linspace_out)
-
+    
+    # Compute 3D coordinates for the inner torus (scaled by `factor`).
     inner_circ_x = (ci+ai*cos(linspace_in)) * cos(linspace_in*61.1)* factor
     inner_circ_y = (ci+ai*cos(linspace_in)) * sin(linspace_in*61.1) * factor
     inner_circ_z =    ai*sin(linspace_in) * factor
 
+    # Stack the coordinates into a single array (X: [n_samples, 3]).
     X = vstack([append(outer_circ_x, inner_circ_x),
                 append(outer_circ_y, inner_circ_y),
                 append(outer_circ_z, inner_circ_z)]).T
 
+    # Generate class labels: 0 for outer torus, 1 for inner torus.
     y = hstack([zeros(n_samples_out, dtype=intp),
                    ones(n_samples_in, dtype=intp)])
 
-
+    # If specified, shuffle the dataset.
     if shuffle:
         X, y = shuffle(X, y, random_state=generator)
 
+    # Add Gaussian noise if specified.
     if noise is not None:
         X += generator.normal(scale=noise, size=X.shape)
 
@@ -272,20 +283,29 @@ def make_torus_3D(n_samples=100, shuffle=True, noise=None, random_state=None,
 
 
 ```{python}
+# Set a fixed random seed for reproducibility
 RANDOM_STATE  = 12345
 seed(RANDOM_STATE)
 
+# Generate a 3D torus dataset with 2000 samples
 X, y = make_torus_3D(n_samples=2000, factor=.9, noise=.001, random_state=RANDOM_STATE)
 
+# Select feature indices for 3D visualization
 feature_1, feature_2, feature_3 = 0, 1, 2
+
+# Get the minimum and maximum values of X for scaling (not used later)
 ft_min, ft_max = X.min(), X.max()
 
+# Create a new figure and axis for 3D plotting
 fig, ax = subplots(figsize=(12, 9))
 
+# Set up 3D axes for visualization
 ax = axes(projection="3d")
 
+# Create a 3D scatter plot
 im = ax.scatter3D(X[:, feature_1], X[:, feature_2], X[:, feature_3], marker='o', s=20, c=y, cmap='bwr');
 
+# Set axis labels
 ax.set_xlabel('Feature 1')
 ax.set_ylabel('Feature 2')
 ax.set_zlabel('Feature 3')
@@ -303,24 +323,31 @@ The challenge here is that the only way to separate the data of the two labels f
 
 ::::::::::::::::::::::::::::::::
 
-## Traing a variety of machine learning models
+## Training a variety of machine learning models
 
-`SciKit Learn` provides the means to generate practice datasets with specific qualities. In this section, we will use the `make_circles` function. (see the [documentations](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_circles.html)):
+`scikit-learn` provides the means to generate practice datasets with specific qualities. In this section, we will use the `make_circles` function - a function that generates a toy dataset which consists of two concentric circles (see the function's [documentation.](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_circles.html)) for more information:
 
 ### **Circular Test Data**
 
 
 ```{python}
+
+# Set random seed for reproducibility.
 RANDOM_STATE  = 1234
 seed(RANDOM_STATE)
 
+# Generates synthetic circular data: 'n_samples' sets the total number of datapoints to 500.
+# 'factor' controls the inner circle to be 30% of the radius of the outer circle.
+# 'noise' adds a very small amount of Gaussian noise.
 X, y = make_circles(n_samples=500, factor=0.3, noise=.05, random_state=RANDOM_STATE)
 
+# This obtains the overall maximum and minimum feature values:
 feature_1, feature_2 = 0, 1
 ft_min, ft_max = X.min(), X.max()
 
 print('Shape of X:', X.shape)
 
+# Plotting:
 fig, ax = subplots(figsize=(10, 5), nrows=1, ncols=2)
 ax[0].scatter(X[:, feature_1], X[:, feature_2], c=y, s=4, cmap='bwr');
 ax[1].hist(X);
@@ -340,53 +367,54 @@ We will now use different classes of machine learning models to fit to these lab
 
 ### **Classification Algorithms**
 
-Different classification algorithms approach problems differently. Let us name the algorithms in `SciKit Learn`.
+Different classification algorithms approach problems differently. Let us name the algorithms in `scikit-learn`.
 
-`SciKit Learn` provides the following algorithms for classification problems:
+`scikit-learn` provides the following algorithms for classification problems. Each listed classifier is hyperlinked to its relevant scikit-learn Documentation page.
 
 - Ensemble: Averaging:
-    - Random Forest
-    - Extra Tree
-    - Isolation Forest
-    - Bagging
-    - Voting
+    - [Random Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
+    - [Extra Tree](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.ExtraTreesClassifier.html)
+    - [Isolation Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html)
+    - [Bagging](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html)
+    - [Voting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html)
 
 - Boosting:
-    - Gradient Boosting
-    - AdaBoost
+    - [Gradient Boosting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)
+    - [AdaBoost](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html)
 
 - Decision Trees:
-    - Decision Tree
-    - Extra Tree
+    - [Decision Tree](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html)
+    - [Extra Tree](https://scikit-learn.org/stable/modules/generated/sklearn.tree.ExtraTreeClassifier.html)
 
 - Nearest Neighbour:
-    - K Nearest Neighbour
-    - Radius Neighbours
-    - Nearest Centroid
+    - [K Nearest Neighbour](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html)
+    - [Radius Neighbours](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.RadiusNeighborsClassifier.html)
+    - [Nearest Centroid](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestCentroid.html)
 
 - Support Vector Machine:
     - with non-linear kernel:
-        - Radial Basis Function (RBF) Polynomial
-        - Sigmoid
+        - [Radial Basis Function (RBF)](https://scikit-learn.org/stable/modules/svm.html#svm-kernels)
+        - [Polynomial](https://scikit-learn.org/stable/modules/svm.html#svm-kernels)
+        - [Sigmoid](https://scikit-learn.org/stable/modules/svm.html#svm-kernels)
     - with linear kernel:
-        - Linear kernel
+        - [Linear kernel](https://scikit-learn.org/stable/modules/svm.html#svm-kernels)
     - parametrised with non-linear kernel:
-        - Nu-Support Vector Classification
+        - [Nu-Support Vector Classification](https://scikit-learn.org/stable/modules/generated/sklearn.svm.NuSVC.html)
 
 - Neural Networks:
-    - Multi-layer Perceptron
+    - [Multi-layer Perceptron](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html)
     - Gaussian:
-        - Gaussian Process
+        - [Gaussian Process](https://scikit-learn.org/stable/modules/generated/sklearn.gaussian_process.GaussianProcessClassifier.html)
     - Linear Models:
-        - Logistic Regression
-        - Passive Aggressive
-        - Ridge
-        - Linear classifiers with Stochastic Gradient Descent
+        - [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)
+        - [Passive Aggressive](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.PassiveAggressiveClassifier.html)
+        - [Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.RidgeClassifier.html)
+        - [Linear classifiers with Stochastic Gradient Descent](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html)
 
 - Baysian:
-    - Bernoulli
-    - Multinomial
-    - Complement
+    - [Bernoulli](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.BernoulliNB.html)
+    - [Multinomial](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.MultinomialNB.html)
+    - [Complement](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.ComplementNB.html)
 
 Some of these algorithms require a more in-depth understanding of how they work. To that end, we only review the performance of those that are easier to implement and adjust.
 
@@ -397,12 +425,12 @@ The AdaBoost algorithm is special in that it does not work on its own; instead, 
 
 __Seeding__
 <p style='text-align: justify;'>
-Most machine learning algorithms rely on random number generation to produce results. Therefore, one simple, but important adjustment is to `seed` the number generator, and thereby making our comparisons more consistent; i.e. ensure that all models use the same set of random numbers. Almost all SciKit Learn models take an argument called `random_state`, which takes an integer number to seed the random number generator.
+Most machine learning algorithms rely on random number generation to produce results. Therefore, one simple, but important adjustment is to `seed` the number generator, and thereby making our comparisons more consistent; i.e. ensure that all models use the same set of random numbers. Almost all scikit-learn models take an argument called `random_state`, which takes an integer number to seed the random number generator.
 </p>
 
 ### **Training and Testing**
 
-Here is code to import a number of classifiers from SciKit Learn, fit them to the training data and predict the (complete) state space. The result is plotted below.
+Here is code to import a number of classifiers from scikit-learn, fit them to the training data and predict the (complete) state space. The result is plotted below.
 
 ```{python}
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, GradientBoostingClassifier, AdaBoostClassifier
@@ -516,7 +544,7 @@ Now we can repeat the training with this split dataset using eight types of mode
 To compare the model performances, we use __scoring__: the method `.score` takes as input arguments the testing samples and their true labels. It then uses the model predictions to calculate the fraction of labels in the testing data that were predicted correctly.
 </p>
 <p style='text-align: justify;'>
-There are different techniques to evaluate the performance, but the `.score`  method provides a quick, simple, and handy way to assess a model. As far as classification algorithms in SciKit Learn are concerned, the method usually produces the __mean accuracy__, which is between 0 and 1; and the higher the score, the better the fit.
+There are different techniques to evaluate the performance, but the `.score`  method provides a quick, simple, and handy way to assess a model. As far as classification algorithms in scikit-learn are concerned, the method usually produces the __mean accuracy__, which is between 0 and 1; and the higher the score, the better the fit.
 </p>
 
 ```{python, results='hide', collapse=TRUE}
@@ -721,8 +749,6 @@ We now train our classifiers on these different splits and obtain the respective
 ```{python, results='hold'}
 X, y = make_circles(n_samples=1000, factor=.3, noise=.4, random_state=RANDOM_STATE)
 
-split_data_indices = sss.split(X=X, y=y)
-
 score = list()
 
 for train_index, test_index in sss.split(X, y):
@@ -777,7 +803,7 @@ There are various measures that may be used to evaluate the performance of a mac
 - Recall
 
 <p style='text-align: justify;'>
-There are many other metrics that, depending on the problem, we may use to evaluate a machine learning model. Please see [the official documentations](https://scikit-learn.org/stable/modules/model_evaluation.html) for additional information on these measures and their implementation in SciKit Learn.
+There are many other metrics that, depending on the problem, we may use to evaluate a machine learning model. Please see [the official documentation](https://scikit-learn.org/stable/modules/model_evaluation.html) for additional information on these measures and their implementation in scikit-learn.
 </p>
 
 The quantities we are going to look at are the __Receiver Operation Characteristic (ROC)__ and the __Area Under the Curve (AUC)__.
@@ -798,7 +824,7 @@ The area under the ROC curve, often referred to as AUC, reduces the information 
 :::::::::::::::::::::::::::::::: discussion
 
 <p style='text-align: justify;'>
-`SciKit Learn` includes specialist functions called `roc_curve` and  `roc_auc_score` to obtain ROC (FPR and TPR values for visualisation) and AUC respectively. Both functions receive as input arguments the test labels (i.e. `y_test`) and the score (probability) associated with each prediction. We obtain the latter measure using one of the following two techniques:
+`scikit-learn` includes specialist functions called `roc_curve` and  `roc_auc_score` to obtain ROC (FPR and TPR values for visualisation) and AUC respectively. Both functions receive as input arguments the test labels (i.e. `y_test`) and the score (probability) associated with each prediction. We obtain the latter measure using one of the following two techniques:
 </p>
 
 - Decision function: where classification models have a `.decision_function` method that provides us with score associated with each label.
@@ -812,7 +838,7 @@ __Area Under the Curve (AUC)__. It refers to the area between the blue ROC curve
 The area under the ROC curve, often referred to as AUC, reduces the information contained within a ROC curve down to a value between and 0 and 1, with 1 being a perfect fit. An AUC value of 0.5 represents a random guess, and values below the diagonal demonstrate a performance that’s even worse than a guess!
 </p>
 <p style='text-align: justify;'>
-SciKit Learn includes specialist functions called `roc_curve` and `roc_auc_score` to obtain ROC (FPR and TPR values for visualisation) and AUC respectively. Both function receive as input arguments the test labels (i.e. y_score) and the score (probability) associated with each prediction. We obtain the latter measure using one of the following two techniques:
+scikit-learn includes specialist functions called `roc_curve` and `roc_auc_score` to obtain ROC (FPR and TPR values for visualisation) and AUC respectively. Both function receive as input arguments the test labels (i.e. y_score) and the score (probability) associated with each prediction. We obtain the latter measure using one of the following two techniques:
 </p>
 
 - Decision function: where classification models have a `.decision_function` method that provides us with a score associated with each label.
@@ -855,7 +881,7 @@ show()
 The (orange) diagonal represents predictions of the two labels by a coin toss. To be of value the classifier must reach a ROC curve above the diagonal.
 
 <p style='text-align: justify;'>
-This concludes our first steps into classification with SciKit Learn. There are many more aspects of classification. From a practical point of view, [data normalisation](https://scikit-learn.org/stable/modules/preprocessing.html) and [permutation test score](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.permutation_test_score.html) as well as the workflow report are important. These will be the topics of our next lesson.
+This concludes our first steps into classification with scikit-learn. There are many more aspects of classification. From a practical point of view, [data normalisation](https://scikit-learn.org/stable/modules/preprocessing.html) and [permutation test score](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.permutation_test_score.html) as well as the workflow report are important. These will be the topics of our next lesson.
 </p>
 
 <br />
@@ -868,30 +894,52 @@ This concludes our first steps into classification with SciKit Learn. There are 
 
 Take the torus-within-a-torus data generator from the __Challenge__ above.
 
-1. Create data with three features and a noise level of 0.3.
+1. Create a 3-feature dataset with the `make_torus_3D()` function using the following properties:
 
-2. Create a pseudo-3D scatter plot of one of the test data sets to judge the difficulty of the task.
+- 2000 samples
+- A factor of 0.8
+- A noise level of 0.3
 
-3. Train the above introduced classifiers using the stratified shuffle split to generate 10 sets of testing and training data and obtain the average score for each classifier.
+2. Create a 3-D scatter plot of the newly generated dataset.
+ 
+_(Optional: Play around with factor and noise to observe how they can make the dataset more or less complex)_.
 
-4. Plot the feature importances obtained from the Random Forest classifier to see the contributions of each feature to the outcome.
+3a. Using the classifiers given above, train and score each model:
 
-Note that with 3 or more features it is no longer possible to see the full state space in a plane.
+- Use the stratified-shuffle-split method:
+    - Set the function to generate 5 sets of test/train splits
+    - Set the test size to 0.3 (30%)
 
-5. Optional: Check how the outcome varies depending on
+- Calculate and store the average score for each classifier
 
-    - Choice of seed for random number generator
-    - Number of data splits
-    - Percentage of data withheld for testing
+3b. Plot the average score for all classifiers. 
+- What is the best performing classifier?
 
-:::::::::::::::: callout
+4. Select the best-performing model from the previous question and store it as a new instance:
+- Plot the feature importances obtained from your chosen model to see how each feature contriutes to the outcome.
+
+_(Hint: You'll need to intialise and fit the model again. You can use the whole dataset for this)_.
+
+5. OPTIONAL: Explore how noise affects the accuracy of a classifier.
+
+
+- Generate three datasets with noise levels of **0.05,  0.2,  0.6** using `make_torus_3D()`. Keep the number of samples and factor the same as in **Question 1**.
+
+- Create an ROC AUC plot for each dataset using the same-best performing model you used in **Question 4** as the model to train and predict with.
+    
+    - Use the `train_test_split()` function from scikit-learn to split your data.
+    - _Look to the lesson for an example of how to generate ROC curve plots._
+
+_(Hint! When calling a for loop on your datasets you will need to nest them inside a list)._
+
+
+Observe and comment on how noise affects the performance of the classifiers in terms of True and False positives.
+
 ## Recommendation
 
 <p style='text-align: justify;'>
-Pick any of the provided (or other) data sets with labels to repeat the above. Feel free to try and do any testing or plotting that you find important. This is not an assignment to get the correct answer. Rather at this stage, we practise to use functionality from SciKit-learn to search for structure in the data that helps to achieve the best predictions possible.
+Pick any of the provided (or other) data sets with labels to repeat the above. Feel free to try and do any testing or plotting that you find important. This is not an assignment to get the correct answer. Rather at this stage, we practise to use functionality from scikit-learn to search for structure in the data that helps to achieve the best predictions possible.
 </p>
-
-::::::::::::::::
 
 ::::::::::::::::::::: solution
 

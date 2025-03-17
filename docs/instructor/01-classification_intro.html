@@ -83,11 +83,11 @@
   Machine Learning - Supervised
 </div>
 
-<aside class="col-md-12 lesson-progress"><div style="width: NA%" class="percentage">
-    NA%
+<aside class="col-md-12 lesson-progress"><div style="width: 0%" class="percentage">
+    0%
   </div>
   <div class="progress l2d">
-    <div class="progress-bar l2d" role="progressbar" style="width: NA%" aria-valuenow="NA" aria-label="Lesson Progress" aria-valuemin="0" aria-valuemax="100">
+    <div class="progress-bar l2d" role="progressbar" style="width: 0%" aria-valuenow="0" aria-label="Lesson Progress" aria-valuemin="0" aria-valuemax="100">
     </div>
   </div>
 </aside><div class="container">
@@ -166,6 +166,15 @@
   </div><!--/div.accordion-item-->
 </div><!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush3">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading3">
+        <a href="02-improvement.html">2. Improvement</a>
+    </div><!--/div.accordion-header-->
+
+  </div><!--/div.accordion-item-->
+</div><!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -208,7 +217,7 @@
   <div class="col-xl-8 col-lg-12 primary-content">
     <nav class="lesson-content mx-md-4" aria-label="Previous and Next Chapter"><!-- content for small screens --><div class="d-block d-sm-block d-md-none">
         <a class="chapter-link" href="../instructor/index.html"><i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>Previous</a>
-        <a class="chapter-link float-end" href="../instructor/index.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
+        <a class="chapter-link float-end" href="../instructor/02-improvement.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
       </div>
       <!-- content for large screens -->
       <div class="d-none d-sm-none d-md-block">
@@ -216,16 +225,16 @@
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>
           Home
         </a>
-        <a class="chapter-link float-end" href="../instructor/index.html" rel="next">
-          Home
+        <a class="chapter-link float-end" href="../instructor/02-improvement.html" rel="next">
+          Next: Improvement...
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i>
         </a>
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Classification</h1>
-        <p>Last updated on 2025-02-25 |
+        <p>Last updated on 2025-03-17 |
 
-        <a href="https://github.com/carpentries/workbench-template-md/edit/main/episodes_old/01-classification_intro.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
+        <a href="https://github.com/carpentries/workbench-template-md/edit/main/episodes/01-classification_intro.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
 
 
@@ -2111,20 +2120,49 @@ classification.</p>
 <h3 class="callout-title">End of chapter Exercises</h3>
 <div class="callout-content">
 <p style="text-align: justify;">
-Repeat the training and prediction workflow as above for two other
-features in the data, namely: Systole and Diastole values. Use 70
-training and 30 testing samples where the labels are assigned according
-to the condition: 0 if ‘non-smoker’, 1 if ‘smoker’.
 </p>
-<p>Use the above code to:</p>
+<p>Repeat the training and prediction workflow as described in the
+Classification lesson for two other independant features in the data,
+namely: - Peak Flow - Pulse Pressure <em>(Hint: use a column operation
+to add an additional ‘PP’ column to the data given the equation
+below).</em></p>
+<p><br>
+Pulse Pressure (PP) is a metric that represents the force the heart
+generates each time it contracts, and can be used to give clinical
+indicators of arterial stiffness or cardiovascular disease.<br><br>
+The equation for pulse pressure is:</p>
+<p><span class="math display">\[
+PP = \text{Systolic BP} - \text{Diastolic BP}
+\]</span></p>
+<p><br>
+Use 70 training and 30 testing samples where the labels are assigned
+according to the condition:</p>
+<ul><li>0 / False for ‘non-smoker’</li>
+<li>1 / True for ‘smoker’</li>
+</ul><p>Use the above code to:</p>
 <ol style="list-style-type: decimal"><li><p>Train the random forest classifier.</p></li>
-<li><p>Create state space plots with scatter plot, categorical
-colouring, and probability contour plot.</p></li>
-<li><p>Compare the predicted and actual labels to check how well the
-trained model performed: how many of the 30 test data points are
-correctly predicted?</p></li>
-<li><p>Plot the feature importance to check how much the systolic and
-diastolic values contributed to the predictions.</p></li>
+<li><p>Create state space scatter plots, making use of categorical
+colouring. Include a probability contour plot.</p></li>
+<li>
+<p>Create a plot of the probability of the predicted label given a
+chosen pair of observations (features):</p>
+<ul><li>Choose a pair of observations that are at the classifcation
+boundary. <em>(Use the probability contour plot as a guide)</em>
+</li>
+<li>Print and plot the model probabilities for both labels</li>
+<li>Observe and comment on how well the model is able to predict
+observations that are on or near to the boundary <em>(Hint: Play around
+with multiple observations to get a feel for this)</em>
+</li>
+</ul></li>
+<li>
+<p>Create multiple scatter plots with predicted labels, true labels
+and use a Boolean array that compares predicted and true labels.</p>
+<ul><li>How many of the 30 test data points are correctly predicted?</li>
+<li>Which observations are incorrectly predicted, and why?</li>
+</ul></li>
+<li><p>Plot feature importance to understand how much each feature
+contributes to the predictions.</p></li>
 </ol></div>
 </div>
 </div>
@@ -2205,7 +2243,7 @@ any links that you are not going to use.
 </section></div> <!-- / div.lesson-content -->
     </main><!-- / main#main-content.main-content --><nav class="bottom-pagination mx-md-4" aria-label="Previous and Next Chapter"><div class="d-block d-sm-block d-md-none">
         <a class="chapter-link" href="../instructor/index.html"><i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>Previous</a>
-        <a class="chapter-link float-end" href="../instructor/index.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
+        <a class="chapter-link float-end" href="../instructor/02-improvement.html">Next<i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i></a>
       </div>
       <!-- content for large screens -->
       <div class="d-none d-sm-none d-md-block">
@@ -2213,8 +2251,8 @@ any links that you are not going to use.
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-left"></i>
           Home
         </a>
-        <a class="chapter-link float-end" href="../instructor/index.html" rel="next">
-          Home
+        <a class="chapter-link float-end" href="../instructor/02-improvement.html" rel="next">
+          Next: Improvement...
           <i aria-hidden="true" class="small-arrow" data-feather="arrow-right"></i>
         </a>
       </div>
@@ -2226,7 +2264,7 @@ any links that you are not going to use.
         <p>This lesson is subject to the <a href="CODE_OF_CONDUCT.html">Code of Conduct</a></p>
         <p>
 
-        <a href="https://github.com/carpentries/workbench-template-md/edit/main/episodes_old/01-classification_intro.Rmd" class="external-link">Edit on GitHub</a>
+        <a href="https://github.com/carpentries/workbench-template-md/edit/main/episodes/01-classification_intro.Rmd" class="external-link">Edit on GitHub</a>
 
 	
         | <a href="https://github.com/carpentries/workbench-template-md/blob/main/CONTRIBUTING.md" class="external-link">Contributing</a>
@@ -2260,8 +2298,8 @@ any links that you are not going to use.
   "url": "https://carpentries.github.io/workbench-template-md/instructor/01-classification_intro.html",
   "identifier": "https://carpentries.github.io/workbench-template-md/instructor/01-classification_intro.html",
   "dateCreated": "2022-07-05",
-  "dateModified": "2025-02-25",
-  "datePublished": "2025-02-25"
+  "dateModified": "2025-03-17",
+  "datePublished": "2025-03-17"
 }
 
   </script><script>
